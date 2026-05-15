@@ -5,13 +5,14 @@ import Image from "next/image";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
+import { User } from "@/types/user";
 
 type HeaderProps = {
   className?: string;
   onMenuToggle?: () => void;
 };
 
-function UserAvatar({ name = "", imageUrl }: HeaderUser) {
+function UserAvatar({ name = "", imageUrl }: Partial<User>) {
   const initials = name
     .split(" ")
     .slice(0, 2)
@@ -65,7 +66,9 @@ const Header: React.FC<HeaderProps> = ({ className, onMenuToggle }) => {
             </span>
           )}
           {user?.email && (
-            <span className="text-xs font-light text-muted-foreground">{user.email}</span>
+            <span className="text-xs font-light text-muted-foreground">
+              {user.email}
+            </span>
           )}
         </span>
         <UserAvatar name={user?.name} imageUrl={imgUrl} />

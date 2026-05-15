@@ -1,30 +1,44 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { format } from "date-fns"
-import { CalendarIcon, ClockIcon } from "lucide-react"
-import { Controller, type Control, type FieldPath, type FieldValues } from "react-hook-form"
+import * as React from "react";
+import { format } from "date-fns";
+import { CalendarIcon, ClockIcon } from "lucide-react";
+import {
+  Controller,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
-type DateFieldMode = "date" | "datetime"
+type DateFieldMode = "date" | "datetime";
 
 type DateFieldProps<TFieldValues extends FieldValues> = {
-  control: Control<TFieldValues>
-  name: FieldPath<TFieldValues>
-  label?: string
-  description?: string
-  placeholder?: string
-  mode?: DateFieldMode
-  required?: boolean
-  disabled?: boolean
-  className?: string
-}
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
+  label?: string;
+  description?: string;
+  placeholder?: string;
+  mode?: DateFieldMode;
+  required?: boolean;
+  disabled?: boolean;
+  className?: string;
+};
 
 function DateField<TFieldValues extends FieldValues>({
   control,
@@ -42,15 +56,17 @@ function DateField<TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field, fieldState }) => {
-        const dateValue = field.value instanceof Date ? field.value : undefined
+        const dateValue =
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (field.value as any) instanceof Date ? field.value : undefined;
 
         function handleTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
-          if (!dateValue) return
-          const [hours, minutes] = e.target.value.split(":").map(Number)
-          const updated = new Date(dateValue)
-          updated.setHours(hours ?? 0)
-          updated.setMinutes(minutes ?? 0)
-          field.onChange(updated)
+          if (!dateValue) return;
+          const [hours, minutes] = e.target.value.split(":").map(Number);
+          const updated = new Date(dateValue);
+          updated.setHours(hours ?? 0);
+          updated.setMinutes(minutes ?? 0);
+          field.onChange(updated);
         }
 
         return (
@@ -73,7 +89,7 @@ function DateField<TFieldValues extends FieldValues>({
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "w-full justify-start text-left font-normal",
-                  !dateValue && "text-muted-foreground"
+                  !dateValue && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="size-4 shrink-0" />
@@ -89,14 +105,14 @@ function DateField<TFieldValues extends FieldValues>({
                   selected={dateValue}
                   onSelect={(date) => {
                     if (!date) {
-                      field.onChange(undefined)
-                      return
+                      field.onChange(undefined);
+                      return;
                     }
                     if (mode === "datetime" && dateValue) {
-                      date.setHours(dateValue.getHours())
-                      date.setMinutes(dateValue.getMinutes())
+                      date.setHours((dateValue as Date).getHours());
+                      date.setMinutes((dateValue as Date).getMinutes());
                     }
-                    field.onChange(date)
+                    field.onChange(date);
                   }}
                   disabled={disabled}
                 />
@@ -117,10 +133,10 @@ function DateField<TFieldValues extends FieldValues>({
             {description && <FieldDescription>{description}</FieldDescription>}
             <FieldError errors={[fieldState.error]} />
           </Field>
-        )
+        );
       }}
     />
-  )
+  );
 }
 
-export { DateField }
+export { DateField };

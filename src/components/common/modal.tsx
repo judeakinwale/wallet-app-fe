@@ -38,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      {trigger && <DialogTrigger>{trigger}</DialogTrigger>}
       <DialogContent className={contentClassName}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -47,9 +47,7 @@ const Modal: React.FC<ModalProps> = ({
         {body}
         {footer && (
           <DialogFooter>
-            {footerCancelBtn && (
-              <DialogClose asChild>{footerCancelBtn}</DialogClose>
-            )}
+            {footerCancelBtn && <DialogClose>{footerCancelBtn}</DialogClose>}
             {footer}
           </DialogFooter>
         )}
