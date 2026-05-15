@@ -14,6 +14,7 @@ import DepositForm from "@/modules/wallet/forms/deposit-form";
 import WithdrawForm from "@/modules/wallet/forms/withdraw-form";
 import { useTransactionStore } from "@/store/useTransactionStore";
 import { User } from "@/types/user";
+import { formatCurrency } from "@/utils";
 
 const TransactionItem: React.FC<{ tx: Transaction }> = ({ tx }) => {
   const { user } = useAuth();
@@ -54,7 +55,9 @@ const TransactionItem: React.FC<{ tx: Transaction }> = ({ tx }) => {
         </span>
         <span className="text-xs text-primary ">{tx.type}</span>
         <div className="flex flex-col gap-0.5">
-          <span className={cn(amountClassName)}>₦ {tx.amount}</span>
+          <span className={cn(amountClassName)}>
+            {formatCurrency(tx.amount)}
+          </span>
           <span className="text-xs">{createdAt}</span>
         </div>
       </div>
@@ -89,11 +92,15 @@ const Dashboard = () => {
   });
 
   // to refetch the data in auth context
-  const { data: me } = useGetItem<User>("/auth/me");
+  const { data: me } = useGetItem<User>("/auth/me", false, undefined, {
+    enabled: !!user?.id,
+  });
 
   // get transactions for the users wallets
   const { data: transactions = storedTx, refetch: refetchTx } =
-    useGetItems<Transaction>(`/transaction/wallet/${walletIdsStr}`);
+    useGetItems<Transaction>(`/transaction/wallet/${walletIdsStr}`, undefined, {
+      enabled: walletIds.length > 0,
+    });
 
   const walletTransactions = useMemo(() => {
     if (!transactions?.length) return [];
@@ -201,7 +208,7 @@ const Dashboard = () => {
               <DashboardCard
                 key={wallet.id}
                 title={wallet.name}
-                value={`₦ ${wallet.balance}`}
+                value={formatCurrency(wallet.balance)}
                 icon={<WalletIcon />}
                 onclick={() => setSelectedWallet(wallet.id)}
                 isActive={selectedWallet === wallet.id}

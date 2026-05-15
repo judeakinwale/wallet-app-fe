@@ -4,14 +4,9 @@ import React from "react";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-type HeaderUser = {
-  name?: string;
-  imageUrl?: string;
-};
+import { useAuth } from "@/context/auth-context";
 
 type HeaderProps = {
-  user: HeaderUser;
   className?: string;
   onMenuToggle?: () => void;
 };
@@ -42,7 +37,10 @@ function UserAvatar({ name = "", imageUrl }: HeaderUser) {
   );
 }
 
-const Header: React.FC<HeaderProps> = ({ user, className, onMenuToggle }) => {
+const Header: React.FC<HeaderProps> = ({ className, onMenuToggle }) => {
+  const { user } = useAuth();
+  const imgUrl = user?.imageUrl || "https://picsum.photos/100";
+
   return (
     <header
       className={cn(
@@ -60,12 +58,17 @@ const Header: React.FC<HeaderProps> = ({ user, className, onMenuToggle }) => {
         </button>
       )}
       <div className="flex items-center gap-2">
-        {user.name && (
-          <span className="text-sm font-medium text-foreground">
-            {user.name}
-          </span>
-        )}
-        <UserAvatar name={user.name} imageUrl={user.imageUrl} />
+        <span className="flex flex-col gap-0.5">
+          {user?.name && (
+            <span className="text-sm font-medium text-foreground">
+              {user.name}
+            </span>
+          )}
+          {user?.email && (
+            <span className="text-xs font-light text-muted-foreground">{user.email}</span>
+          )}
+        </span>
+        <UserAvatar name={user?.name} imageUrl={imgUrl} />
       </div>
     </header>
   );

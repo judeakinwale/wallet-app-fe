@@ -7,18 +7,14 @@ import { useAuth } from "@/context/auth-context";
 const SideNavLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
-
-  const userInfo = {
-    imageUrl: "https://picsum.photos/100",
-    ...(mounted ? user : {}),
-  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -28,10 +24,7 @@ const SideNavLayout: React.FC<{ children: React.ReactNode }> = ({
         onMobileClose={() => setIsMobileSidebarOpen(false)}
       />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <Header
-          user={userInfo}
-          onMenuToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
-        />
+        <Header onMenuToggle={() => setIsMobileSidebarOpen((prev) => !prev)} />
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>

@@ -21,7 +21,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   return (
     <div
       className={cn(
-        "w-full min-w-[25%] min-h-40 flex flex-col justify-center p-4 border rounded shadow-sm",
+        "w-full min-w-[25%] min-h-20 flex flex-col justify-center p-4 border rounded shadow-sm",
         isActive && "border-primary bg-primary/10",
       )}
       onClick={onclick}

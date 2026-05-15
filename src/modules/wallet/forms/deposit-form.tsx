@@ -36,6 +36,7 @@ const DepositForm: React.FC<DepositFormProps> = ({ walletId, onSuccess }) => {
   );
 
   function handleSubmit(values: DepositFormValues) {
+    values = {...values, amount: values.amount * 100} // convert to kobo
     depositAsync(values, {
       onSuccess: () => {
         form.reset();
@@ -55,7 +56,7 @@ const DepositForm: React.FC<DepositFormProps> = ({ walletId, onSuccess }) => {
         <InputField
           control={form.control}
           name="amount"
-          label="Amount"
+          label="Amount (₦)"
           type="number"
           placeholder="Enter amount"
           required

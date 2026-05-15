@@ -13,6 +13,8 @@ export interface User {
   wallets?: Wallet[];
   createdAt: string;
   updatedAt: string;
+
+  imageUrl?: string;
 }
 
 export interface LoginResponse extends User {

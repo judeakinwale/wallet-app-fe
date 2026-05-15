@@ -44,6 +44,7 @@ const WithdrawForm: React.FC<WithdrawFormProps> = ({
   );
 
   function handleSubmit(values: WithdrawFormValues) {
+    values = { ...values, amount: values.amount * 100 }; // convert to kobo
     withdrawAsync(values, {
       onSuccess: () => {
         form.reset();
@@ -63,7 +64,7 @@ const WithdrawForm: React.FC<WithdrawFormProps> = ({
         <InputField
           control={form.control}
           name="amount"
-          label="Amount"
+          label="Amount (₦)"
           type="number"
           placeholder="Enter amount"
           required

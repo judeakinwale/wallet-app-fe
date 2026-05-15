@@ -180,11 +180,16 @@ export const deleteItem = async (relativeUrl: string, id?: id | false) => {
   return data;
 };
 
-export const useGetItems = <T>(relativeUrl: string, placeholder?: T[]) => {
+export const useGetItems = <T>(
+  relativeUrl: string,
+  placeholder?: T[],
+  extraArgs?: Partial<UseQueryOptions<T[], any, any, QueryKey>>,
+) => {
   return useQuery<T[]>({
     placeholderData: placeholder,
     queryFn: async () => await getItems(relativeUrl),
     queryKey: [relativeUrl],
+    ...extraArgs,
   });
 };
 

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/ui/form-fields";
 import { useAuth } from "@/context/auth-context";
+import { UserSelectField } from "@/components/ui/form-fields/user-select-field";
 
 type TransferFormProps = {
   walletId: number;
@@ -47,6 +48,7 @@ const TransferForm: React.FC<TransferFormProps> = ({
   );
 
   function handleSubmit(values: TransferFormValues) {
+    values = {...values, amount: values.amount * 100} // convert to kobo
     transferAsync(values, {
       onSuccess: () => {
         form.reset();
@@ -62,18 +64,26 @@ const TransferForm: React.FC<TransferFormProps> = ({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-5"
       >
-        <InputField
+        {/* <InputField
           control={form.control}
           name="recipientWalletId"
           label="Recipient Wallet ID"
           type="number"
           placeholder="Enter recipient wallet ID"
           required
+        /> */}
+        <UserSelectField
+          control={form.control}
+          name="recipientWalletId"
+          label="Recipient Wallet"
+          placeholder="Search for recipient wallet owner..."
+          getValue={(user) => user.wallets?.[0]?.id} // all users have at least 1 wallet
+          required
         />
         <InputField
           control={form.control}
           name="amount"
-          label="Amount"
+          label="Amount (₦)"
           type="number"
           placeholder="Enter amount"
           required

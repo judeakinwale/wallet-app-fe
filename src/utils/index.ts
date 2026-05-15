@@ -6,6 +6,7 @@ export {
   getJsonHeaders,
   getFormDataHeaders,
 } from "./fetch";
+export { formatCurrency } from "./format";
 
 export function tryParse<T>(
   data?: string,
