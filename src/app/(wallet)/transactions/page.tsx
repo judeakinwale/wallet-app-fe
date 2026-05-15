@@ -25,7 +25,7 @@ const columns: (userId?: number) => ColumnDef<Transaction>[] = (userId) => [
     key: "type",
     header: "Type",
     accessor: (tx) => {
-      const display = resolveDisplayType(tx, userId);
+      const display = resolveDisplayType(tx);
       const styles = TYPE_STYLES[display] ?? TYPE_STYLES.transfer;
       return (
         <span
@@ -43,7 +43,7 @@ const columns: (userId?: number) => ColumnDef<Transaction>[] = (userId) => [
   {
     key: "from",
     header: "From",
-    accessor: (tx) => tx.fromWallet?.name ?? "—",
+    accessor: (tx) => tx.fromWallet?.name ?? "-",
   },
   {
     key: "to",
@@ -51,13 +51,13 @@ const columns: (userId?: number) => ColumnDef<Transaction>[] = (userId) => [
     accessor: (tx) =>
       tx.toWallet
         ? `${tx.toWallet.user?.name ?? ""} [${tx.toWallet.name}]`.trim()
-        : "—",
+        : "-",
   },
   {
     key: "amount",
     header: "Amount",
     accessor: (tx) => {
-      const display = resolveDisplayType(tx, userId);
+      const display = resolveDisplayType(tx);
       const styles = TYPE_STYLES[display] ?? TYPE_STYLES.transfer;
       return (
         <span className={cn("font-medium", styles.text)}>
