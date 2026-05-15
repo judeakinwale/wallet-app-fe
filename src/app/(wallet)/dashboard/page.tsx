@@ -45,12 +45,18 @@ const TransactionItem: React.FC<{ tx: Transaction }> = ({ tx }) => {
     return <>&harr;</>;
   };
 
+  const fromDetails = tx.fromWallet
+    ? `${tx.fromWallet?.user?.name ?? ""} [${tx.fromWallet?.name ?? ""}]`.trim()
+    : "-";
+  const toDetails = tx.toWallet
+    ? `${tx.toWallet?.user?.name ?? ""} [${tx.toWallet?.name ?? ""}]`.trim()
+    : "-";
+
   return (
     <div className={cn(containerClassName)}>
       <div className="flex items-center justify-between gap-4 px-3 py-2">
         <span className="flex gap-2 text-xs">
-          {tx.fromWallet?.name} {displayArrow(txDisplayType)}{" "}
-          {tx.toWallet?.user?.name} [{tx.toWallet?.name}]
+          {fromDetails} {displayArrow(txDisplayType)} {toDetails}
         </span>
         <span className="text-xs text-primary ">{tx.type}</span>
         <div className="flex flex-col gap-0.5">

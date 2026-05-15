@@ -43,7 +43,10 @@ const columns: (userId?: number) => ColumnDef<Transaction>[] = (userId) => [
   {
     key: "from",
     header: "From",
-    accessor: (tx) => tx.fromWallet?.name ?? "-",
+    accessor: (tx) =>
+      tx.fromWallet
+        ? `${tx.fromWallet.user?.name ?? ""} [${tx.fromWallet.name}]`.trim()
+        : "-",
   },
   {
     key: "to",
