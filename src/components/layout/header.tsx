@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,8 +40,16 @@ function UserAvatar({ name = "", imageUrl }: Partial<User>) {
 }
 
 const Header: React.FC<HeaderProps> = ({ className, onMenuToggle }) => {
-  const { user } = useAuth();
+  const { user: contextUser } = useAuth();
+
+  const [mounted, setMounted] = useState(false);
+
+  const user = mounted ? contextUser : undefined;
   const imgUrl = user?.imageUrl || "https://picsum.photos/100";
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header
@@ -63,11 +72,6 @@ const Header: React.FC<HeaderProps> = ({ className, onMenuToggle }) => {
           {user?.name && (
             <span className="text-sm font-medium text-foreground">
               {user.name}
-            </span>
-          )}
-          {user?.email && (
-            <span className="text-xs font-light text-muted-foreground">
-              {user.email}
             </span>
           )}
         </span>

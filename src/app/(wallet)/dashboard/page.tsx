@@ -2,7 +2,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import DashboardCard from "@/components/dashboard/dashboard-card";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { WalletIcon } from "lucide-react";
 import { Transaction } from "@/types/transaction";
@@ -114,12 +113,12 @@ const Dashboard = () => {
 
   const selectedWalletData = wallets.find((w) => w.id === selectedWallet);
 
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const recentTransactions = walletTransactions
     .filter((tx) => {
-      return new Date(tx.createdAt).getTime() >= thirtyDaysAgo.getTime();
+      return new Date(tx.createdAt).getTime() >= sevenDaysAgo.getTime();
     })
     .sort(
       (a, b) =>
@@ -146,7 +145,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col gap-4 p-6">
       {/* dashboard btns */}
-      <div className="flex items-center justify-end gap-4">
+      <div className="flex items-center justify-end flex-wrap gap-4">
         <Modal
           open={modalOpen.transfer}
           onOpenChange={toggleModal("transfer")}
@@ -221,7 +220,7 @@ const Dashboard = () => {
         <div className="w-full space-y-4">
           <h3 className="text-lg">Recent Transactions</h3>
           <div className="flex flex-col gap-2">
-            {recentTransactions?.map((tx) => {
+            {recentTransactions.slice(0, 50).map((tx) => {
               return <TransactionItem key={tx.id} tx={tx} />;
             })}
           </div>

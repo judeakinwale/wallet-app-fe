@@ -22,7 +22,11 @@ const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   // { label: "Profile", href: "/user", icon: User },
   // { label: "Wallets", href: "/wallets", icon: Wallet },
-  // { label: "Transactions", href: "/transactions", icon: ArrowLeftRight },
+  {
+    label: "Transactions",
+    href: "/transactions",
+    icon: ArrowLeftRight,
+  },
   // { label: "Settings", href: "/settings", icon: Settings },
 ];
 
