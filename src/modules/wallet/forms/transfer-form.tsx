@@ -9,23 +9,34 @@ import { useCreateItem } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/ui/form-fields";
-
-const transferSchema = z.object({
-  amount: z.number().positive("Amount must be greater than 0"),
-  recipientWalletId: z
-    .number()
-    .int()
-    .positive("Recipient wallet ID must be a positive integer"),
-});
-
-type TransferFormValues = z.infer<typeof transferSchema>;
+import { useAuth } from "@/context/auth-context";
 
 type TransferFormProps = {
   walletId: number;
+  walletBalance?: number;
   onSuccess?: () => void;
 };
 
-const TransferForm: React.FC<TransferFormProps> = ({ walletId, onSuccess }) => {
+const TransferForm: React.FC<TransferFormProps> = ({
+  walletId,
+  walletBalance = 0,
+  onSuccess,
+}) => {
+  const { refetchUser } = useAuth();
+
+  const transferSchema = z.object({
+    amount: z
+      .number()
+      .max(walletBalance, "Amount must be less than or equal to wallet balance")
+      .positive("Amount must be greater than 0"),
+    recipientWalletId: z
+      .number()
+      .int()
+      .positive("Recipient wallet ID must be a positive integer"),
+  });
+
+  type TransferFormValues = z.infer<typeof transferSchema>;
+
   const form = useForm<TransferFormValues>({
     resolver: zodResolver(transferSchema),
     defaultValues: { amount: 0, recipientWalletId: 0 },
@@ -40,6 +51,7 @@ const TransferForm: React.FC<TransferFormProps> = ({ walletId, onSuccess }) => {
       onSuccess: () => {
         form.reset();
         onSuccess?.();
+        refetchUser?.();
       },
     });
   }

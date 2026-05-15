@@ -7,12 +7,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { DEFAULT_AUTHENTICATED_ROUTE } from "@/constants/routes";
-import { errorAlert } from "@/utils";
+import {
+  DEFAULT_AUTHENTICATED_ROUTE,
+  DEFAULT_UNAUTHENTICATED_ROUTE,
+} from "@/constants/routes";
+import { errorAlert, successAlert } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/ui/form-fields";
 import { useCreateItem } from "@/hooks";
+import { getToken } from "@/utils/fetch";
 
 const registerSchema = z
   .object({
@@ -31,23 +35,30 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 const Register: React.FC = () => {
   const router = useRouter();
 
+  const token = getToken();
+  React.useEffect(() => {
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [token, router]);
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const { mutateAsync: registerAsync, isPending } =
-    useCreateItem("/auth/register");
+  const { mutateAsync: registerAsync, isPending } = useCreateItem(
+    "/auth/register",
+    false,
+  );
 
   function handleSubmit(values: RegisterFormValues) {
     const { confirmPassword: _, ...payload } = values;
     registerAsync(payload, {
       onSuccess: (data) => {
-        document.cookie = `access_token=${data.token}; path=/; SameSite=Lax`;
-        router.push(DEFAULT_AUTHENTICATED_ROUTE);
-      },
-      onError: (error: Error) => {
-        errorAlert(error.message || "Registration failed. Please try again.");
+        console.log({ successData: data });
+        router.push(DEFAULT_UNAUTHENTICATED_ROUTE);
+        successAlert("Account created successfully! Redirecting...");
       },
     });
   }

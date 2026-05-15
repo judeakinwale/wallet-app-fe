@@ -18,7 +18,7 @@ type InputFieldProps<TFieldValues extends FieldValues = FieldValues> = {
   required?: boolean;
   disabled?: boolean;
   className?: string;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 function InputField<TFieldValues extends FieldValues = FieldValues>({
   control,
@@ -29,6 +29,7 @@ function InputField<TFieldValues extends FieldValues = FieldValues>({
   required,
   disabled,
   className,
+  ...props
 }: InputFieldProps<TFieldValues>) {
   return (
     <FormField
@@ -54,6 +55,7 @@ function InputField<TFieldValues extends FieldValues = FieldValues>({
                 field.onChange(val);
               }
             }}
+            max={props.max}
           />
           <FormMessage />
         </FormItem>

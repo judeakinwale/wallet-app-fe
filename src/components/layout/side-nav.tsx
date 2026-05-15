@@ -21,8 +21,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   // { label: "Profile", href: "/user", icon: User },
-  { label: "Wallets", href: "/wallets", icon: Wallet },
-  { label: "Transactions", href: "/transactions", icon: ArrowLeftRight },
+  // { label: "Wallets", href: "/wallets", icon: Wallet },
+  // { label: "Transactions", href: "/transactions", icon: ArrowLeftRight },
   // { label: "Settings", href: "/settings", icon: Settings },
 ];
 
@@ -32,7 +32,11 @@ type SideNavProps = {
   onMobileClose?: () => void;
 };
 
-const SideNav: React.FC<SideNavProps> = ({ onLogout, isMobileOpen, onMobileClose }) => {
+const SideNav: React.FC<SideNavProps> = ({
+  onLogout,
+  isMobileOpen,
+  onMobileClose,
+}) => {
   const pathname = usePathname();
 
   const navContent = (

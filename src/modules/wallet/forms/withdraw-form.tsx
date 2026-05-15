@@ -9,19 +9,30 @@ import { useCreateItem } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/ui/form-fields";
-
-const withdrawSchema = z.object({
-  amount: z.number().positive("Amount must be greater than 0"),
-});
-
-type WithdrawFormValues = z.infer<typeof withdrawSchema>;
+import { useAuth } from "@/context/auth-context";
+import { successAlert } from "@/utils";
 
 type WithdrawFormProps = {
   walletId: number;
+  walletBalance?: number;
   onSuccess?: () => void;
 };
 
-const WithdrawForm: React.FC<WithdrawFormProps> = ({ walletId, onSuccess }) => {
+const WithdrawForm: React.FC<WithdrawFormProps> = ({
+  walletId,
+  walletBalance = 0,
+  onSuccess,
+}) => {
+  const { refetchUser } = useAuth();
+
+  const withdrawSchema = z.object({
+    amount: z
+      .number()
+      .max(walletBalance, "Amount must be less than or equal to wallet balance")
+      .positive("Amount must be greater than 0"),
+  });
+  type WithdrawFormValues = z.infer<typeof withdrawSchema>;
+
   const form = useForm<WithdrawFormValues>({
     resolver: zodResolver(withdrawSchema),
     defaultValues: { amount: 0 },
@@ -29,6 +40,7 @@ const WithdrawForm: React.FC<WithdrawFormProps> = ({ walletId, onSuccess }) => {
 
   const { mutateAsync: withdrawAsync, isPending } = useCreateItem(
     `/wallet/${walletId}/withdraw`,
+    false,
   );
 
   function handleSubmit(values: WithdrawFormValues) {
@@ -36,6 +48,8 @@ const WithdrawForm: React.FC<WithdrawFormProps> = ({ walletId, onSuccess }) => {
       onSuccess: () => {
         form.reset();
         onSuccess?.();
+        refetchUser?.();
+        successAlert("Withdrawal successful!");
       },
     });
   }

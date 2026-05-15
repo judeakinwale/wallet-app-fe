@@ -11,6 +11,7 @@ import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/ui/form-fields";
 import { useAuth } from "@/context/auth-context";
 import { useIsMutating } from "@tanstack/react-query";
+import { getToken } from "@/utils/fetch";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email address"),
@@ -23,6 +24,13 @@ const Login: React.FC = () => {
   const router = useRouter();
   const { login } = useAuth();
   const isMutating = useIsMutating({ mutationKey: ["/auth/login"] }) > 0;
+
+  const token = getToken();
+  React.useEffect(() => {
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [token, router]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),

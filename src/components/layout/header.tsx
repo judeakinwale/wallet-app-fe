@@ -6,7 +6,7 @@ import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type HeaderUser = {
-  name: string;
+  name?: string;
   imageUrl?: string;
 };
 
@@ -16,7 +16,7 @@ type HeaderProps = {
   onMenuToggle?: () => void;
 };
 
-function UserAvatar({ name, imageUrl }: HeaderUser) {
+function UserAvatar({ name = "", imageUrl }: HeaderUser) {
   const initials = name
     .split(" ")
     .slice(0, 2)
@@ -60,7 +60,11 @@ const Header: React.FC<HeaderProps> = ({ user, className, onMenuToggle }) => {
         </button>
       )}
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-foreground">{user.name}</span>
+        {user.name && (
+          <span className="text-sm font-medium text-foreground">
+            {user.name}
+          </span>
+        )}
         <UserAvatar name={user.name} imageUrl={user.imageUrl} />
       </div>
     </header>

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API_BASE_URL } from "@/constants/api";
 import {
-  formDataHeaders,
-  jsonHeaders,
+  getFormDataHeaders,
+  getJsonHeaders,
   errorAlert,
   successAlert,
 } from "../utils";
@@ -25,13 +25,19 @@ export const getItems = async (relativeUrl: string) => {
   const url = `${API_BASE_URL}${relativeUrl}`;
   const response = await fetch(url, {
     method: "GET",
-    headers: jsonHeaders,
-    credentials: "include",
+    headers: getJsonHeaders(),
+    // credentials: "include",
   });
-  if (!response.ok) {
-    throw new Error(response.statusText || "Error contacting server");
-  }
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+        data?.error ||
+        response.statusText ||
+        "Error contacting server",
+    );
+  }
 
   if (!data?.success)
     throw new Error(data?.error || data?.message || "Error contacting server");
@@ -45,13 +51,19 @@ export const getItem = async (relativeUrl: string, id?: id | false) => {
   const url = `${API_BASE_URL}${relativeUrl}`;
   const response = await fetch(url, {
     method: "GET",
-    headers: jsonHeaders,
-    credentials: "include",
+    headers: getJsonHeaders(),
+    // credentials: "include",
   });
-  if (!response.ok) {
-    throw new Error(response.statusText || "Error contacting server");
-  }
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+        data?.error ||
+        response.statusText ||
+        "Error contacting server",
+    );
+  }
 
   if (!data?.success)
     throw new Error(data?.error || data?.message || "Error contacting server");
@@ -83,12 +95,19 @@ export const createItem = async (relativeUrl: string, formData: any) => {
   const response = await fetch(url, {
     method: "POST",
     body: isFormData ? formDataPayload : JSON.stringify(formData),
-    headers: isFormData ? formDataHeaders : jsonHeaders,
+    headers: isFormData ? getFormDataHeaders() : getJsonHeaders(),
+    // credentials: "include",
   });
-  if (!response.ok) {
-    throw new Error(response.statusText || "Error contacting server");
-  }
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+        data?.error ||
+        response.statusText ||
+        "Error contacting server",
+    );
+  }
 
   if (!data?.success)
     throw new Error(data?.error || data?.message || "Error contacting server");
@@ -117,12 +136,19 @@ export const updateItem = async (
   const response = await fetch(url, {
     method: "PATCH",
     body: isFormData ? formDataPayload : JSON.stringify(formData),
-    headers: isFormData ? formDataHeaders : jsonHeaders,
+    headers: isFormData ? getFormDataHeaders() : getJsonHeaders(),
+    // credentials: "include",
   });
-  if (!response.ok) {
-    throw new Error(response.statusText || "Error contacting server");
-  }
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+        data?.error ||
+        response.statusText ||
+        "Error contacting server",
+    );
+  }
 
   if (!data?.success)
     throw new Error(data?.error || data?.message || "Error contacting server");
@@ -134,12 +160,19 @@ export const deleteItem = async (relativeUrl: string, id?: id | false) => {
   const url = `${API_BASE_URL}${relativeUrl}/${id || ""}`;
   const response = await fetch(url, {
     method: "DELETE",
-    headers: jsonHeaders,
+    headers: getJsonHeaders(),
+    // credentials: "include",
   });
-  if (!response.ok) {
-    throw new Error(response.statusText || "Error contacting server");
-  }
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message ||
+        data?.error ||
+        response.statusText ||
+        "Error contacting server",
+    );
+  }
 
   if (!data?.success)
     throw new Error(data?.error || data?.message || "Error contacting server");
@@ -171,7 +204,7 @@ export const useGetItem = <T>(
 
 export const useCreateItem = <T>(
   relativeUrl: string,
-  successMessage?: string,
+  successMessage?: string | false,
   messageOptions?: MessageOptions,
 ) => {
   const queryClient = useQueryClient();
@@ -183,7 +216,7 @@ export const useCreateItem = <T>(
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: [relativeUrl] });
 
-      if (!messageOptions?.hideSuccessMessage) {
+      if (!messageOptions?.hideSuccessMessage && successMessage !== false) {
         const msg = successMessage
           ? successMessage
           : "Item created successfully";
@@ -201,7 +234,7 @@ export const useCreateItem = <T>(
 
 export const useCreateMultipleItems = <T>(
   relativeUrl: string,
-  successMessage?: string,
+  successMessage?: string | false,
   messageOptions?: MessageOptions,
 ) => {
   const queryClient = useQueryClient();
@@ -218,7 +251,7 @@ export const useCreateMultipleItems = <T>(
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: [relativeUrl] });
 
-      if (!messageOptions?.hideSuccessMessage) {
+      if (!messageOptions?.hideSuccessMessage && successMessage !== false) {
         const msg = successMessage
           ? successMessage
           : "Items created successfully";
@@ -237,7 +270,7 @@ export const useCreateMultipleItems = <T>(
 export const useUpdateItem = <T>(
   relativeUrl: string,
   id?: id | false,
-  successMessage?: string,
+  successMessage?: string | false,
   messageOptions?: MessageOptions,
   shouldUpdateURLWithId: boolean = true,
 ) => {
@@ -254,7 +287,7 @@ export const useUpdateItem = <T>(
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: [relativeUrl] });
 
-      if (!messageOptions?.hideSuccessMessage) {
+      if (!messageOptions?.hideSuccessMessage && successMessage !== false) {
         const msg = successMessage
           ? successMessage
           : "Item updated successfully";
@@ -272,7 +305,7 @@ export const useUpdateItem = <T>(
 
 export const useDeleteItem = <T>(
   relativeUrl: string,
-  successMessage?: string,
+  successMessage?: string | false,
 ) => {
   const queryClient = useQueryClient();
 

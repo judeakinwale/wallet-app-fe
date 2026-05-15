@@ -1,4 +1,3 @@
-import React from "react";
 import type { Wallet } from "./wallet";
 
 export interface LoginPayload {
@@ -18,4 +17,5 @@ export interface User {
 
 export interface LoginResponse extends User {
   token: string;
+  tokenExpiresAt?: number; // Unix timestamp in seconds
 }

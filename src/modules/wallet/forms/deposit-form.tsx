@@ -9,6 +9,8 @@ import { useCreateItem } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputField } from "@/components/ui/form-fields";
+import { useAuth } from "@/context/auth-context";
+import { successAlert } from "@/utils";
 
 const depositSchema = z.object({
   amount: z.number().positive("Amount must be greater than 0"),
@@ -21,10 +23,8 @@ type DepositFormProps = {
   onSuccess?: () => void;
 };
 
-const DepositForm: React.FC<DepositFormProps> = ({
-  walletId,
-  onSuccess,
-}) => {
+const DepositForm: React.FC<DepositFormProps> = ({ walletId, onSuccess }) => {
+  const { refetchUser } = useAuth();
   const form = useForm<DepositFormValues>({
     resolver: zodResolver(depositSchema),
     defaultValues: { amount: 0 },
@@ -32,6 +32,7 @@ const DepositForm: React.FC<DepositFormProps> = ({
 
   const { mutateAsync: depositAsync, isPending } = useCreateItem(
     `/wallet/${walletId}/deposit`,
+    false,
   );
 
   function handleSubmit(values: DepositFormValues) {
@@ -39,6 +40,8 @@ const DepositForm: React.FC<DepositFormProps> = ({
       onSuccess: () => {
         form.reset();
         onSuccess?.();
+        refetchUser?.();
+        successAlert("Deposit successful!");
       },
     });
   }
@@ -58,7 +61,7 @@ const DepositForm: React.FC<DepositFormProps> = ({
           required
         />
         <Button type="submit" className="w-full mt-1" disabled={isPending}>
-          {isPending ? "Withdrawing…" : "Withdraw"}
+          {isPending ? "Depositing…" : "Deposit"}
         </Button>
       </form>
     </Form>

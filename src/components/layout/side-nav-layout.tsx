@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SideNav } from "./side-nav";
 import { Header } from "./header";
 import { useAuth } from "@/context/auth-context";
@@ -9,8 +9,16 @@ const SideNavLayout: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { user, logout } = useAuth();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const userInfo = { name: "Jane Doe", imageUrl: "https://picsum.photos/100", ...user };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const userInfo = {
+    imageUrl: "https://picsum.photos/100",
+    ...(mounted ? user : {}),
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">

@@ -6,3 +6,4 @@ export {
   useUpdateItem,
   useDeleteItem,
 } from "./api";
+export { useLocalStorage } from "./localstorage";
